@@ -10,18 +10,23 @@ void Title();
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleTitle("Bataille Navale");
-    Title();
-    char valide = "X";
+    char valide = 88;
+    char louper = 79;
+    int inc = 1;
+    int compteur = 10;
+    int win = 0;
+    int colonne = 0;
+    int ligne = 0;
     int carte1[10][10] = {
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,1,0,0,0,0,0,0,0},
+            {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,1,0,0,1,0,0},
-            {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,1,0,0,0,0},
-            {0,0,0,1,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,4,0,0,0},
+            {0,3,3,3,0,0,4,0,0,0},
+            {0,0,0,0,0,0,4,0,0,0},
+            {0,0,0,0,0,0,4,0,0,0},
+            {0,0,0,0,0,0,0,0,2,0},
+            {0,0,0,3,3,3,0,0,2,0},
             {0,0,0,0,0,0,0,0,0,0},
     };
     int carte2[10][10] = {
@@ -134,25 +139,58 @@ int main() {
     };
 
 
-    for (int i = 0; i < 41; ++i) {
-        printf("-");
-    }
-    printf("\n");
-    for (int ligne = 0; ligne < 10; ++ligne) {
-        for (int colonne = 0; colonne < 10; ++colonne) {
-            if(carte1[ligne][colonne] == 1){
-                printf("| %c ",valide);
-            } else{
-                printf("|   ");
-            }
-
-        }
-        printf("|\n");
+    do{
+        inc = 1;
+        Title();
+        printf("    1   2   3   4   5   6   7   8   9   10  Colonne\n");
+        printf("   ");
         for (int i = 0; i < 41; ++i) {
             printf("-");
         }
         printf("\n");
-    }
+        for (int ligne = 0; ligne < 10; ++ligne) {
+            printf("%2d ",inc);
+            for (int colonne = 0; colonne < 10; ++colonne) {
+                if(carte1[ligne][colonne] == 1){
+                    printf("| %c ",valide);
+                } else if (carte1[ligne][colonne] == 9){
+                    printf("| %c ",louper);
+                }else{
+                    printf("| ~ ");
+                }
+
+            }
+            printf("|\n");
+            printf("   ");
+            for (int i = 0; i < 41; ++i) {
+                printf("-");
+            }
+            inc++;
+            printf("\n");
+        }
+        printf("Ligne\n\nCompteur : %d\n", compteur);
+
+        do{
+            printf("Veuillez entrer une colonne (/aide) :");
+            scanf("%d", &colonne);
+        }while (colonne <=0 || colonne >= 11);
+        do{
+            printf("Veuillez entrer une ligne (/aide) :");
+            scanf("%d", &ligne);
+        }while (ligne<=0 || ligne >= 11);
+
+        if (carte1[ligne-1][colonne-1] == 5 || carte1[ligne-1][colonne-1] == 4 || carte1[ligne-1][colonne-1] == 3 || carte1[ligne-1][colonne-1] == 2){
+            carte1[ligne-1][colonne-1] = 1;
+        }else{
+            carte1[ligne-1][colonne-1] = 9;
+        }
+
+
+
+        compteur--;
+        system("cls");
+    }while (compteur > 0);
+
 
 
     system("pause");
@@ -162,5 +200,5 @@ int main() {
 void Title(){
     printf("--------------\n");
     printf("Bataille Naval\n");
-    printf("--------------\n");
+    printf("--------------\n\n");
 }
