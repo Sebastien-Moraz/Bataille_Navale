@@ -6,6 +6,7 @@
 
 
 void Title();
+void Aide();
 
 int main() {
     SetConsoleOutputCP(CP_UTF8);
@@ -13,10 +14,11 @@ int main() {
     char valide = 88;
     char louper = 79;
     int inc = 1;
-    int compteur = 10;
+    int compteur = 50;
     int win = 0;
     int colonne = 0;
     int ligne = 0;
+
     int carte1[10][10] = {
             {0,0,0,0,0,0,0,0,0,0},
             {0,5,5,5,5,5,0,0,0,0},
@@ -171,12 +173,16 @@ int main() {
         printf("Ligne\n\nCompteur : %d\n", compteur);
 
         do{
-            printf("Veuillez entrer une colonne (/aide) :");
+            printf("Veuillez entrer une colonne (11 - aide) :");
             scanf("%d", &colonne);
+            Aide();
         }while (colonne <=0 || colonne >= 11);
+
+
         do{
-            printf("Veuillez entrer une ligne (/aide) :");
+            printf("Veuillez entrer une ligne (11 - aide) :");
             scanf("%d", &ligne);
+            Aide();
         }while (ligne<=0 || ligne >= 11);
 
         if (carte1[ligne-1][colonne-1] == 5 || carte1[ligne-1][colonne-1] == 4 || carte1[ligne-1][colonne-1] == 3 || carte1[ligne-1][colonne-1] == 2){
@@ -198,7 +204,14 @@ int main() {
 }
 
 void Title(){
-    printf("--------------\n");
-    printf("Bataille Naval\n");
-    printf("--------------\n\n");
+    printf("---------------\n");
+    printf("Bataille Navale\n");
+    printf("---------------\n\n");
+}
+
+
+
+void Aide(){
+
+
 }
