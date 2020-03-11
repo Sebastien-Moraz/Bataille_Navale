@@ -13,6 +13,8 @@ int main() {
     SetConsoleTitle("Bataille Navale");
     char valide = 88;
     char louper = 79;
+    int caseAvecBateau = 0;
+    int choix = 0;
     int inc = 1;
     int compteur = 50;
     int win = 0;
@@ -158,7 +160,7 @@ int main() {
                 } else if (carte1[ligne][colonne] == 9){
                     printf("| %c ",louper);
                 }else{
-                    printf("| ~ ");
+                    printf("|   ");
                 }
 
             }
@@ -175,31 +177,65 @@ int main() {
         do{
             printf("Veuillez entrer une colonne (11 - aide) :");
             scanf("%d", &colonne);
-            Aide();
+            if (colonne == 11){
+                Aide();
+            }
         }while (colonne <=0 || colonne >= 11);
 
 
         do{
             printf("Veuillez entrer une ligne (11 - aide) :");
             scanf("%d", &ligne);
-            Aide();
+            if (ligne == 11){
+                Aide();
+            }
         }while (ligne<=0 || ligne >= 11);
 
-        if (carte1[ligne-1][colonne-1] == 5 || carte1[ligne-1][colonne-1] == 4 || carte1[ligne-1][colonne-1] == 3 || carte1[ligne-1][colonne-1] == 2){
+        if (carte1[ligne-1][colonne-1] == 1 || carte1[ligne-1][colonne-1] == 9){
+            compteur++;
+        }
+
+        if (carte1[ligne-1][colonne-1] == 5 || carte1[ligne-1][colonne-1] == 4 || carte1[ligne-1][colonne-1] == 3 || carte1[ligne-1][colonne-1] == 2 || carte1[ligne-1][colonne-1] == 1){
             carte1[ligne-1][colonne-1] = 1;
-        }else{
+        }else {
             carte1[ligne-1][colonne-1] = 9;
         }
 
-
-
+        caseAvecBateau = 0;
+        for (int j = 0; j < 10; ++j) {
+            for (int i = 0; i < 10; ++i) {
+                if (carte1[j][i] == 2 || carte1[j][i] == 3 || carte1[j][i] == 4 || carte1[j][i] == 5){
+                    caseAvecBateau++;
+                }
+            }
+        }
+        if (caseAvecBateau == 0){
+            win = 1;
+        }
         compteur--;
         system("cls");
-    }while (compteur > 0);
+    }while (compteur > 0 && win == 0);
+    Title();
+    if (compteur == 0){
+        printf("Vous avez perdu\n");
+    }
+    if (win == 1){
+        printf("Vous avez gagné !!\n");
+    }
 
+    printf("Voulez vous rejouer ? \n");
+    printf("1 - oui\n");
+    printf("2 - non\n");
+    printf("Votre choix :");
+    scanf("%d", &choix);
+    switch (choix){
+        case 1:
+            main();
+            break;
+        case 2:
+            return 0;
+    }
 
-
-    system("pause");
     return 0;
 }
 
@@ -212,6 +248,8 @@ void Title(){
 
 
 void Aide(){
+    printf("\naide:");
+    printf("\n- La croix indique que vous avez touché un bateau");
 
-
+    printf("\n\n");
 }
