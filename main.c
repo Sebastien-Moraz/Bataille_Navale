@@ -18,8 +18,8 @@ int main() {
     int inc = 1;
     int compteur = 50;
     int win = 0;
-    int colonne = 0;
-    int ligne = 0;
+
+
 
     int carte1[10][10] = {
             {0,0,0,0,0,0,0,0,0,0},
@@ -145,6 +145,8 @@ int main() {
 
     do{
         inc = 1;
+        int colonne = 0;
+        int ligne = 0;
         Title();
         printf("    1   2   3   4   5   6   7   8   9   10  Colonne\n");
         printf("   ");
@@ -217,6 +219,10 @@ int main() {
         do{
             printf("Veuillez entrer une colonne (11 - aide) :");
             scanf("%d", &colonne);
+            int temp;
+            do{ //source : https://openclassrooms.com/forum/sujet/vider-le-buffer-de-scanf-90403
+                temp = getchar();
+            } while (temp != EOF && temp != '\n');
             if (colonne == 11){
                 Aide();
             }
@@ -226,6 +232,11 @@ int main() {
         do{
             printf("Veuillez entrer une ligne (11 - aide) :");
             scanf("%d", &ligne);
+            int temp;
+            do{ //source : https://openclassrooms.com/forum/sujet/vider-le-buffer-de-scanf-90403
+                temp = getchar();
+            } while (temp != EOF && temp != '\n');
+
             if (ligne == 11){
                 Aide();
             }
