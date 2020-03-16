@@ -1,6 +1,12 @@
+/* ----------------------------
+ * Nom : Bataille Navale
+ * Déscription : Le but est de jouer la bataille navale seul
+ * Version : 0.1
+ * ----------------------------
+ */
+
+
 #include <stdio.h>
-#include <string.h>
-#include <time.h>
 #include <windows.h>
 #include <stdlib.h>
 
@@ -20,7 +26,7 @@ int main() {
     int win = 0;
 
 
-
+    //creation de la carte
     int carte1[10][10] = {
             {0,0,0,0,0,0,0,0,0,0},
             {0,5,5,5,5,5,0,0,0,0},
@@ -33,11 +39,15 @@ int main() {
             {0,0,0,6,6,6,0,0,2,0},
             {0,0,0,0,0,0,0,0,0,0},
     };
+
+    //boucle de jeu
     do{
         inc = 1;
         int colonne = 0;
         int ligne = 0;
         Title();
+
+        //print du tableau
         printf("    1   2   3   4   5   6   7   8   9   10  Colonne\n");
         printf("   ");
         for (int i = 0; i < 41; ++i) {
@@ -65,6 +75,7 @@ int main() {
             printf("\n");
         }
 
+        //declaration des bateaux
         int porteAvions = 0;
         int croiseur = 0;
         int contreTorpilleurs1 = 0;
@@ -106,6 +117,7 @@ int main() {
 
         printf("Ligne\n\nCompteur : %d\tPorte-avions : %d\tCroiseur : %d\tContre-torpilleurs : %d\tTorpilleur : %d\n\n", compteur, porteAvions, croiseur, totalContreTorpilleurs, torpilleur);
 
+        //demande des valeurs
         do{
             printf("Veuillez entrer une colonne (11 - aide) :");
             scanf("%d", &colonne);
@@ -132,6 +144,7 @@ int main() {
             }
         }while (ligne<=0 || ligne >= 11);
 
+        //controle de si il y a un bateau ou non
         if (carte1[ligne-1][colonne-1] == 1 || carte1[ligne-1][colonne-1] == 9){
             compteur++;
         }
@@ -156,6 +169,8 @@ int main() {
         compteur--;
         system("cls");
     }while (compteur > 0 && win == 0);
+
+    // recherche si vous avez gagnez ou perdu
     Title();
     if (compteur == 0){
         printf("Vous avez perdu\n");
@@ -164,6 +179,7 @@ int main() {
         printf("Vous avez gagné !!\n");
     }
 
+    //demande si oui ou non il faut reexecuter le programme
     printf("Voulez vous rejouer ? \n");
     printf("1 - oui\n");
     printf("2 - non\n");
@@ -181,6 +197,7 @@ int main() {
     return 0;
 }
 
+//print de titre de page
 void Title(){
     printf("---------------\n");
     printf("Bataille Navale\n");
@@ -188,7 +205,7 @@ void Title(){
 }
 
 
-
+//print de l'aide
 void Aide(){
     printf("\n\t ________");
     printf("\n\t|  AIDE  |");
@@ -197,6 +214,5 @@ void Aide(){
     printf("\n- Le rond indique que vous avez loupé les bateaux");
     printf("\n\nIl y a en tout : \n 1 porte-avion (5 cases)\n 1 croiseur (4 cases)\n 2 contre-torpilleurs (3 cases)\n 1 torpilleur (2 cases)");
     printf("\n\n- Le but du jeu est de trouver tout les bateaux sur la carte\n  avec le moins de coup possible");
-
     printf("\n\n");
 }
