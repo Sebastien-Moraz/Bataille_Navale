@@ -22,6 +22,7 @@ void Connexion();
 void Inscription();
 void AideStart();
 
+FILE *Log = NULL;
 
 
 char username[24];
@@ -30,16 +31,20 @@ char password[24];
 int carte[10][10] = {0};
 
 int main() {
+    Log = fopen("log", "a");
+    fprintf(Log, "Ouverture du programme\n");
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleTitle("Bataille Navale");
     Start();
+    fprintf(Log, "Fermeture du programme\n\n");
+    fclose(Log);
     return 0;
 
 }
 
 void Start(){
     int choix = 0;
-
+    fprintf(Log,"Ouverture du menu principal\n");
     do{
         system("cls");
         Title();
@@ -50,7 +55,7 @@ void Start(){
         printf("Votre choix :");
         scanf("%d", &choix);
     } while (choix <1 || choix > 4);
-
+    fprintf(Log,"Choix du menu principal : %d\n", choix);
     switch (choix){
         case 1:
             Connexion();
@@ -70,6 +75,7 @@ void Start(){
 }
 
 void Connexion(){
+    fprintf(Log,"Ouverture de la page de connexion\n");
     char val[24];
     system("cls");
     Title();
@@ -101,19 +107,22 @@ void AideStart(){
 }
 
 void Inscription(){
-
+    fprintf(Log,"Ouverture de la page D'inscription\n");
     system("cls");
     Title();
     printf("Veuillez entrer un nom d'utilisateur :");
     scanf("%s", username);
+    fprintf(Log,"Entrer du nom d'utilisateur: %s\n",username);
     system("cls");
     Title();
     printf("Veuillez entrer votre prénom :");
     scanf("%s",prenom);
+    fprintf(Log,"Entrer du prenom : %s\n", prenom);
     system("cls");
     Title();
     printf("Veuillez entrer un mot de passe :");
     scanf("%s",password);
+    fprintf(Log,"Entrer du mot de passe : %s\n", password);
     FILE *User = NULL;
     User = fopen(username, "w");
     fprintf(User,"%s\n", prenom);
