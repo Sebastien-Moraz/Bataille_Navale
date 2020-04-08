@@ -1,5 +1,6 @@
 /* --------------------------------------------------------
  * Nom : Bataille Navale
+ * Auteur : Sébastien Moraz
  * Déscription : Le but est de jouer la bataille navale seul
  * Version : 1.0
  * --------------------------------------------------------
@@ -10,6 +11,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 //load des fonction
 void Title();
@@ -21,6 +23,7 @@ void Start();
 void Connexion();
 void Inscription();
 void AideStart();
+void PrintScore();
 
 FILE *Log = NULL;
 
@@ -31,7 +34,7 @@ char password[24];
 int carte[10][10] = {0};
 
 int main() {
-    Log = fopen("log", "a");
+    Log = fopen("log.txt", "a");
     fprintf(Log, "Ouverture du programme\n");
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleTitle("Bataille Navale");
@@ -67,7 +70,7 @@ void Start(){
             AideStart();
             break;
         case 4:
-            return;
+            system("exit");
         default:
             Start();
             break;
@@ -81,18 +84,22 @@ void Connexion(){
     Title();
     printf("Veuillez entrer votre nom d'utilisateur :");
     scanf("%s",username);
+    fprintf(Log,"Entrer du nom d'utilisateur : %s\n", username);
     FILE* fichier = NULL;
     fichier = fopen(username, "r+");
 
     if (fichier != NULL){
+        fprintf(Log,"Fichier du l'utilisateur trouver\n");
         fscanf(fichier,"%s\n%s", prenom, password);
         fclose(fichier);
 
         while (strcmp(val, password)!= 0){
             printf("\nVeuillez entrer votre mot de passe :");
             scanf("%s", val);
+            fprintf(Log,"Entrer du mot de passe : %s\n", password);
         }
         strcpy(val,"");
+-        fprintf(Log,"Mot de passe valide\n");
         Menu();
 
     } else{
@@ -103,7 +110,18 @@ void Connexion(){
 }
 
 void AideStart(){
-
+    fprintf(Log,"Ouverture du de la page d'AideStart\n");
+    system("cls");
+    printf("\n\t ________");
+    printf("\n\t|  AIDE  |");
+    printf("\n\t|________|\n");
+    printf("\n- La croix indique que vous avez touché un bateau");
+    printf("\n- Le rond indique que vous avez loupé les bateaux");
+    printf("\n\nIl y a en tout : \n 1 porte-avion (5 cases)\n 1 croiseur (4 cases)\n 2 contre-torpilleurs (3 cases)\n 1 torpilleur (2 cases)");
+    printf("\n\n- Le but du jeu est de trouver tout les bateaux sur la carte\n  avec le moins de coup possible");
+    printf("\n\n");
+    system("pause");
+    Start();
 }
 
 void Inscription(){
@@ -112,6 +130,18 @@ void Inscription(){
     Title();
     printf("Veuillez entrer un nom d'utilisateur :");
     scanf("%s", username);
+
+    //----------Controle de l'utilisation du nom d'utilisateur---------
+    FILE* controle = NULL;
+    controle = fopen(username, "r+");
+    if (controle != NULL) {
+        printf("Ce nom d'utilisateur existe deja\n");
+        fprintf(Log,"Nom d'utilisateur déja utilisé\n");
+        system("pause");
+        fclose(controle);
+        Inscription();
+    }
+    //-----------------------------------------------------------------
     fprintf(Log,"Entrer du nom d'utilisateur: %s\n",username);
     system("cls");
     Title();
@@ -124,16 +154,21 @@ void Inscription(){
     scanf("%s",password);
     fprintf(Log,"Entrer du mot de passe : %s\n", password);
     FILE *User = NULL;
+    fprintf(Log,"Ouverture et creation du fichier de l'utilisateur\n");
     User = fopen(username, "w");
     fprintf(User,"%s\n", prenom);
+    fprintf(Log,"Ecriture du prenom dans le fichier de l'utilisateur\n");
     fprintf(User, "%s\n", password);
+    fprintf(Log,"Ecriture du mot de passe dans le fichier de l'utilisateur\n");
     fclose(User);
+    fprintf(Log,"Fermeture du fichier de l'utilisateur\n");
     Start();
 }
 
 
 //-------------print de titre de page-------------
 void Title(){
+    fprintf(Log,"Affichage du titre\n");
     printf("---------------\n");
     printf("Bataille Navale\n");
     printf("---------------\n\n");
@@ -142,6 +177,7 @@ void Title(){
 
 //-----------------print de l'aide----------------
 void Aide(){
+    fprintf(Log,"Affichage de l'aide du jeu\n");
     printf("\n\t ________");
     printf("\n\t|  AIDE  |");
     printf("\n\t|________|\n");
@@ -156,6 +192,7 @@ void Aide(){
 
 
 void Menu(){
+    fprintf(Log,"Ouverture du menu de jeu\n");
     int choixMenu = 0;
     int temp = 0;
     system("cls");
@@ -171,19 +208,25 @@ void Menu(){
     do{ //source : https://openclassrooms.com/forum/sujet/vider-le-buffer-de-scanf-90403
         temp = getchar();
     } while (temp != EOF && temp != '\n');
+    fprintf(Log,"Choix du menu principal : %d\n", choixMenu);
     switch (choixMenu){
         case 1:
+            system("cls");
             TempJeu();
             break;
         case 2:
+            PrintScore();
             break;
         case 3:
+            fprintf(Log,"Reinitialisation des variable de l'utilisateur\n");
             strcpy(username,"");
             strcpy(password,"");
             strcpy(prenom,"");
             Start();
             break;
         case 4:
+            fprintf(Log, "Fermeture du programme\n\n");
+            system("exit");
             break;
         default:
             Menu();
@@ -192,6 +235,7 @@ void Menu(){
 
 
 void jeu(){
+    fprintf(Log,"Ouverture du jeu\n");
     char valide = 88;
     char louper = 79;
     int caseAvecBateau = 0;
@@ -202,6 +246,7 @@ void jeu(){
 
 
     //boucle de jeu
+    fprintf(Log,"Affichage de la grille du jeu\n");
     do{
         inc = 1;
         int colonne = 0;
@@ -244,7 +289,7 @@ void jeu(){
         int contreTorpilleurs2 = 0;
         int totalContreTorpilleurs = 0;
         int torpilleur = 0;
-
+        fprintf(Log,"Recherche des bateaux restant\n");
         for (int k = 0; k < 10; ++k) {
             for (int i = 0; i < 10; ++i) {
                 if (carte[k][i] == 5){
@@ -304,6 +349,7 @@ void jeu(){
                 Aide();
             }
         }while (ligne<=0 || ligne >= 11);
+        fprintf(Log,"Valeur des coordonnée choisi : colonne = %d / ligne = %d\n",colonne,ligne);
         //------------------------------------------------
 
         //-----controle de si il y a un bateau ou non-----
@@ -313,12 +359,14 @@ void jeu(){
 
         if (carte[ligne-1][colonne-1] == 5 || carte[ligne-1][colonne-1] == 4 || carte[ligne-1][colonne-1] == 3 || carte[ligne-1][colonne-1] == 2 || carte[ligne-1][colonne-1] == 1 || carte[ligne-1][colonne-1] == 6){
             carte[ligne-1][colonne-1] = 1;
+            fprintf(Log,"La case était un bateau\n");
         }else {
             carte[ligne-1][colonne-1] = 9;
         }
         //------------------------------------------------
 
         //-----controle si il y a encore des bateaux------
+        fprintf(Log,"Controle des bateaux restant\n");
         caseAvecBateau = 0;
         for (int j = 0; j < 10; ++j) {
             for (int i = 0; i < 10; ++i) {
@@ -334,13 +382,26 @@ void jeu(){
         compteur--;
         system("cls");
     }while (compteur > 0 && win == 0); // fin de la boucle de jeu
+    fprintf(Log,"Fermeture du jeu\n");
+
+
+    if (compteur != 0){
+        FILE *Score = NULL;
+        Score = fopen("Score", "a");
+        fprintf(Score,"%s : %d points\n", username, compteur * 100);
+        fprintf(Log, "Ecriture du score dans le fichier Score\n");
+        fclose(Score);
+    }
+
 
     //----recherche si vous avez gagnez ou perdu-----
     Title();
     if (compteur == 0){
+        fprintf(Log,"partie perdu\n");
         printf("Vous avez perdu\n");
     }
     if (win == 1){
+        fprintf(Log,"Partie gagné\n");
         printf("Vous avez gagné !!\n");
     }
     //------------------------------------------------
@@ -353,6 +414,7 @@ void jeu(){
         printf("\nVotre choix :");
         scanf("%d", &choix);
     } while (choix < 1 || choix > 2);
+    fprintf(Log,"Choix de la fin de jeu : %d\n",choix);
     switch (choix) {
         case 1:
             system("cls");
@@ -366,10 +428,37 @@ void jeu(){
     Menu();//si jamais
 }
 
+
+void PrintScore(){
+    fprintf(Log,"Ouverture du menu \"Score\"\n");
+    system("cls");
+    int text;
+    printf(" _________\n");
+    printf("|  Score  |\n");
+    printf("|_________|\n\n");
+
+
+    FILE *Score = NULL;
+    Score = fopen("Score", "r");
+
+
+    do {
+        text = fgetc(Score);
+        printf("%c",text);
+    } while (text != EOF);
+    printf("\n");
+    system("pause");
+    Menu();
+}
+
+
+
+
 void TempJeu(){
+    fprintf(Log,"Ouverture du TempJeu\n");
     int aleatoir = 0;
     int carte1[10][10] = {
-            {1,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
             {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,4,0,0,0},
@@ -379,118 +468,118 @@ void TempJeu(){
             {0,0,0,0,0,0,0,0,2,0},
             {0,0,0,6,6,6,0,0,2,0},
             {0,0,0,0,0,0,0,0,0,0},
-    };
+};
     int carte2[10][10] = {
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,2,2,0,0,0,5,0,0},
+            {0,0,0,0,0,0,0,5,0,0},
+            {0,0,0,0,0,0,0,5,0,0},
+            {0,0,0,4,0,0,0,5,0,0},
+            {0,0,0,4,0,0,0,5,0,0},
+            {0,0,0,4,0,0,0,0,0,0},
+            {0,0,0,4,0,0,0,6,6,6},
             {0,0,0,0,0,0,0,0,0,0},
+            {0,3,3,3,0,0,0,0,0,0},
     };
     int carte3[10][10] = {
-            {0,0,1,0,0,0,0,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
+            {0,0,0,0,0,0,0,0,2,2},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
             {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,6,6,6,0,0},
+            {3,0,0,0,0,0,0,0,0,0},
+            {3,0,0,5,0,0,4,0,0,0},
+            {3,0,0,5,0,0,4,0,0,0},
+            {0,0,0,5,0,0,4,0,0,0},
+            {0,0,0,5,0,0,4,0,0,0},
+            {0,0,0,5,0,0,0,0,0,0},
     };
     int carte4[10][10] = {
-            {0,0,0,1,0,0,0,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
+            {0,6,0,0,5,5,5,5,5,0},
+            {0,6,0,0,0,0,0,0,0,0},
+            {0,6,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,0,0,2,2,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,4,4,4,4,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,3,3,3,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
     };
     int carte5[10][10] = {
-            {0,0,0,0,1,0,0,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
-            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,3,0,0,0,0,0,0},
+            {0,0,0,3,0,0,0,0,0,0},
+            {0,0,0,3,0,0,0,0,0,4},
+            {2,2,0,0,0,0,0,0,0,4},
+            {0,5,0,0,0,0,0,0,0,4},
+            {0,5,0,0,0,0,0,0,0,4},
+            {0,5,0,0,0,6,6,6,0,0},
+            {0,5,0,0,0,0,0,0,0,0},
+            {0,5,0,0,0,0,0,0,0,0},
     };
     int carte6[10][10] = {
-            {0,0,0,0,0,1,0,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
+            {0,0,0,0,0,0,2,0,0,0},
+            {0,0,0,6,0,0,2,0,0,0},
+            {0,5,0,6,0,0,0,0,0,0},
+            {0,5,0,6,0,0,0,0,0,0},
+            {0,5,0,0,0,0,0,0,0,0},
+            {0,5,0,0,3,3,3,0,0,0},
+            {0,5,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,4,4,4,4,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
     };
     int carte7[10][10] = {
-            {0,0,0,0,0,0,1,0,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
+            {0,0,4,4,4,4,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,0,0,0,0,2,2,0},
             {0,0,0,0,0,0,0,0,0,0},
+            {0,0,6,6,6,0,0,0,0,0},
+            {0,0,5,0,0,0,0,0,0,0},
+            {0,0,5,0,0,0,0,0,0,0},
+            {0,0,5,0,0,0,0,3,0,0},
+            {0,0,5,0,0,0,0,3,0,0},
+            {0,0,5,0,0,0,0,3,0,0},
     };
     int carte8[10][10] = {
-            {0,0,0,0,0,0,0,1,0,0},
-            {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,0,0,0,0,6,0,0},
+            {0,0,0,2,2,0,0,6,0,0},
+            {0,0,0,0,0,0,0,6,0,0},
+            {0,4,4,4,4,0,0,0,0,0},
+            {0,0,0,0,0,3,0,0,0,0},
+            {0,0,0,0,0,3,0,0,0,0},
+            {0,0,0,0,0,3,0,0,0,0},
+            {5,5,5,5,5,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
     };
     int carte9[10][10] = {
-            {0,0,0,0,0,0,0,0,1,0},
-            {0,5,5,5,5,5,0,0,0,0},
+            {6,0,0,0,0,0,0,0,0,0},
+            {6,0,0,0,0,0,0,0,0,0},
+            {6,0,0,5,5,5,5,5,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,0,0,2,2,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
+            {0,4,0,0,0,0,0,3,0,0},
+            {0,4,0,0,0,0,0,3,0,0},
+            {0,4,0,0,0,0,0,3,0,0},
+            {0,4,0,0,0,0,0,0,0,0},
     };
     int carte10[10][10] = {
-            {0,0,0,0,0,0,0,0,0,1},
-            {0,5,5,5,5,5,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,3,3,3,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,4,0,0,0},
-            {0,0,0,0,0,0,0,0,2,0},
-            {0,0,0,6,6,6,0,0,2,0},
+            {0,0,0,0,5,5,5,5,5,0},
+            {0,0,4,0,0,0,0,0,0,0},
+            {0,0,4,0,0,0,0,3,0,0},
+            {0,0,4,0,0,0,0,3,0,0},
+            {0,0,4,0,0,0,0,3,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,6,6,6,0,0,2,2},
             {0,0,0,0,0,0,0,0,0,0},
     };
     srand((unsigned) time (NULL) );
     aleatoir = 1 + rand() % 10;
-
+    fprintf(Log,"Choix de la carte : %d\n", aleatoir);
     switch (aleatoir){
         case 1:
             for (int i = 0; i < 10; ++i) {
@@ -498,7 +587,6 @@ void TempJeu(){
                     carte[i][j] = carte1[i][j];
                 }
             }
-            jeu();
             break;
         case 2:
             for (int i = 0; i < 10; ++i) {
@@ -506,7 +594,6 @@ void TempJeu(){
                     carte[i][j] = carte2[i][j];
                 }
             }
-            jeu();
             break;
         case 3:
             for (int i = 0; i < 10; ++i) {
@@ -514,7 +601,6 @@ void TempJeu(){
                     carte[i][j] = carte3[i][j];
                 }
             }
-            jeu();
             break;
         case 4:
             for (int i = 0; i < 10; ++i) {
@@ -522,7 +608,6 @@ void TempJeu(){
                     carte[i][j] = carte4[i][j];
                 }
             }
-            jeu();
             break;
         case 5:
             for (int i = 0; i < 10; ++i) {
@@ -530,7 +615,6 @@ void TempJeu(){
                     carte[i][j] = carte5[i][j];
                 }
             }
-            jeu();
             break;
         case 6:
             for (int i = 0; i < 10; ++i) {
@@ -538,7 +622,6 @@ void TempJeu(){
                     carte[i][j] = carte6[i][j];
                 }
             }
-            jeu();
             break;
         case 7:
             for (int i = 0; i < 10; ++i) {
@@ -546,7 +629,6 @@ void TempJeu(){
                     carte[i][j] = carte7[i][j];
                 }
             }
-            jeu();
             break;
         case 8:
             for (int i = 0; i < 10; ++i) {
@@ -554,7 +636,6 @@ void TempJeu(){
                     carte[i][j] = carte8[i][j];
                 }
             }
-            jeu();
             break;
         case 9:
             for (int i = 0; i < 10; ++i) {
@@ -562,7 +643,6 @@ void TempJeu(){
                     carte[i][j] = carte9[i][j];
                 }
             }
-            jeu();
             break;
         case 10:
             for (int i = 0; i < 10; ++i) {
@@ -570,11 +650,12 @@ void TempJeu(){
                     carte[i][j] = carte10[i][j];
                 }
             }
-            jeu();
             break;
         default:
             TempJeu();
-
+            break;
     }
+    fprintf(Log,"Reussit du transfère de la carte\n");
+    jeu();
 
 }
